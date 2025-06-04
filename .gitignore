@@ -1,1 +1,32 @@
-[obiger Inhalt]
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Quarkus
+.quarkus/
+.build/
+
+# Environment / Config
+.env
+.env.*
+
+# Docker
+**/init-user.sql
+
+# Backup / temp files
+*.bak
+*~
