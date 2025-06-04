@@ -1,0 +1,5 @@
+/home/obivan/squadmap-backend/src/main/java/org/squadmap/location/repository/LocationRepository.java
+/home/obivan/squadmap-backend/src/main/java/org/squadmap/location/dto/LocationDto.java
+/home/obivan/squadmap-backend/src/main/java/org/squadmap/location/service/LocationService.java
+/home/obivan/squadmap-backend/src/main/java/org/squadmap/location/entity/Location.java
+/home/obivan/squadmap-backend/src/main/java/org/squadmap/location/resource/LocationResource.java

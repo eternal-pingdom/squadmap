@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mariadb:10.11
+    container_name: squadmap-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: squadmap
+      MYSQL_USER: squadmap
+      MYSQL_PASSWORD: squadmap
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: squadmap-backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - QUARKUS_DATASOURCE_USERNAME=squadmap
+      - QUARKUS_DATASOURCE_PASSWORD=squadmap
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:mariadb://mysql:3306/squadmap
+      - QUARKUS_DATASOURCE_DB_KIND=mysql
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:

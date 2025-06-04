@@ -1,0 +1,5 @@
+org/squadmap/location/service/LocationService.class
+org/squadmap/location/entity/Location.class
+org/squadmap/location/dto/LocationDto.class
+org/squadmap/location/repository/LocationRepository.class
+org/squadmap/location/resource/LocationResource.class
