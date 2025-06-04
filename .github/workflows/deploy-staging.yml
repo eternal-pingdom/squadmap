@@ -21,7 +21,7 @@ jobs:
           java-version: '21'
 
       - name: Build Quarkus App
-        run: ./mvnw clean package -DskipTests
+        run: ./mvnw clean package -Dquarkus.package.type=uber-jar
 
       - name: Copy files to staging server
         uses: appleboy/scp-action@v0.1.7
