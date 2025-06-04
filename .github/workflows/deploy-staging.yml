@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
           source: target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
-          target: /home/obivan/squadmap-deploy/
+          target: /home/obivan/squadmap-backend/
           port: ${{ secrets.STAGING_PORT }}                # ← WICHTIG!
           timeout: 30s
           command_timeout: 10m
@@ -43,6 +43,6 @@ jobs:
           key: ${{ secrets.STAGING_SSH_KEY }}
           port: ${{ secrets.STAGING_PORT }}
           script: |
-            cd /home/obivan/squadmap-deploy
+            cd /home/obivan/squadmap-backend
             docker compose down
             docker compose up -d --build
