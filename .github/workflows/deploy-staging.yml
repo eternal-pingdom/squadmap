@@ -31,6 +31,9 @@ jobs:
           key: ${{ secrets.STAGING_SSH_KEY }}
           source: target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
           target: /home/obivan/squadmap-deploy/
+          port: ${{ secrets.STAGING_PORT }}                # ← WICHTIG!
+          timeout: 30s
+          command_timeout: 10m
 
       - name: Restart service via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -38,6 +41,7 @@ jobs:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_PORT }}
           script: |
             cd /home/obivan/squadmap-deploy
             docker compose down
