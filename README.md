@@ -10,3 +10,4 @@ Verwendet: Quarkus, JPA, Flyway, REST, Docker.
 3. Image bauen: `docker build -t squadmap-backend .`
 4. Container starten: `docker run -p 8080:8080 squadmap-backend`
 # test
+# Trigger redeploy
