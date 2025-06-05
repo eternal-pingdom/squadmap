@@ -32,9 +32,9 @@ jobs:
           key: ${{ secrets.STAGING_SSH_KEY }}
           port: ${{ secrets.STAGING_PORT }}
           script: |
-            sudo mkdir -p /home/obivan/squadmap-deploy
-            sudo chown -R obivan:obivan /home/obivan/squadmap-deploy
-            sudo chmod -R u+rwX /home/obivan/squadmap-deploy
+            mkdir -p /home/obivan/squadmap-deploy
+            chown -R obivan:obivan /home/obivan/squadmap-deploy
+            chmod -R u+rwX /home/obivan/squadmap-deploy
 
       - name: Copy JAR to staging server
         uses: appleboy/scp-action@v0.1.7
