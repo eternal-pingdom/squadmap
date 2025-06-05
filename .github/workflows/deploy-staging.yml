@@ -2,8 +2,8 @@ name: Deploy to Staging
 
 on:
   push:
-    branches: [ master ]
-  workflow_dispatch:
+    branches:
+      - master
 
 jobs:
   deploy-staging:
@@ -23,29 +23,30 @@ jobs:
       - name: Build Quarkus App
         run: ./mvnw clean package -Dquarkus.package.type=uber-jar
 
-      - name: Delete old JAR
-        user: appleboy/ssh-action@v1.0.3
+      - name: Delete old JAR on staging
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
-          port: 2222
+          port: ${{ secrets.STAGING_PORT }}
           script: |
-            rm -f /home/obivan/squadmap-deploy/target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
-      - name: Copy files to staging server
+            rm -f /home/obivan/squadmap-backend/target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
+
+      - name: Copy JAR to staging server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_PORT }}
           source: target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
-          target: /home/obivan/squadmap-backend/
+          target: /home/obivan/squadmap-backend/target/
           overwrite: true
-          port: ${{ secrets.STAGING_PORT }}                # ← WICHTIG!
           timeout: 30s
           command_timeout: 10m
 
-      - name: Restart service via SSH
+      - name: Fix permissions and restart Docker
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.STAGING_HOST }}
@@ -54,5 +55,7 @@ jobs:
           port: ${{ secrets.STAGING_PORT }}
           script: |
             cd /home/obivan/squadmap-backend
+            chown obivan:obivan ./target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
+            chmod 755 ./target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
             docker compose down
             docker compose up -d --build
