@@ -23,7 +23,7 @@
 - Automatisiertes Deployment auf Staging (Hetzner)
 
 ## 🧱 Aufbau
-
+ 
 ```
 squadmap/
 ├── backend/
