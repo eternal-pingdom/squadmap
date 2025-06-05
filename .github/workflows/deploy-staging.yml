@@ -24,7 +24,7 @@ jobs:
       - name: Build Quarkus App
         run: ./mvnw clean package -Dquarkus.package.type=uber-jar
 
-      - name: Fix ownership and delete old JAR
+      - name: Ensure target directory and permissions
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.STAGING_HOST }}
@@ -32,18 +32,18 @@ jobs:
           key: ${{ secrets.STAGING_SSH_KEY }}
           port: ${{ secrets.STAGING_PORT }}
           script: |
-            sudo mkdir -p /home/obivan/squadmap-backend/target
-            sudo chown -R obivan:obivan /home/obivan/squadmap-backend
-            rm -f /home/obivan/squadmap-backend/target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar || true
+            sudo mkdir -p /home/obivan/squadmap-deploy
+            sudo chown -R obivan:obivan /home/obivan/squadmap-deploy
+            sudo chmod -R u+rwX /home/obivan/squadmap-deploy
 
-      - name: Copy files to staging server
+      - name: Copy JAR to staging server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
           source: target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
-          target: /home/obivan/squadmap-backend/target/
+          target: /home/obivan/squadmap-deploy/
           overwrite: true
           port: ${{ secrets.STAGING_PORT }}
           timeout: 30s
@@ -57,6 +57,6 @@ jobs:
           key: ${{ secrets.STAGING_SSH_KEY }}
           port: ${{ secrets.STAGING_PORT }}
           script: |
-            cd /home/obivan/squadmap-backend
-            docker compose down
+            cd /home/obivan/squadmap-deploy
+            docker compose down || true
             docker compose up -d --build
