@@ -72,15 +72,16 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-maven-plugin</artifactId>
-                <version>${quarkus.plugin.version}</version>
+                <!-- Hier stehen groupId und artifactId des quarkus-maven-plugin -->
+                <!-- z.B. <groupId>io.quarkus</groupId> -->
+                <!-- <artifactId>quarkus-maven-plugin</artifactId> -->
+                <!-- <version>${quarkus.platform.version}</version> -->
                 <executions>
                     <execution>
                         <goals>
                             <goal>build</goal>
                             <goal>generate-code</goal>
-                            <goal>dev</goal>
+                            <!-- <goal>dev</goal> Diese Zeile entfernen oder auskommentieren -->
                         </goals>
                     </execution>
                 </executions>
