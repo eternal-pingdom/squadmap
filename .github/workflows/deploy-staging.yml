@@ -23,6 +23,15 @@ jobs:
       - name: Build Quarkus App
         run: ./mvnw clean package -Dquarkus.package.type=uber-jar
 
+      - name: Delete old JAR
+        user: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: 2222
+          script: |
+            rm -f /home/obivan/squadmap-deploy/target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
       - name: Copy files to staging server
         uses: appleboy/scp-action@v0.1.7
         with:
