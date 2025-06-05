@@ -18,20 +18,20 @@ public class LocationService {
 
     public void save(LocationDto dto) {
         Location l = new Location();
-        l.userId = dto.userId;
-        l.latitude = dto.latitude;
-        l.longitude = dto.longitude;
-        l.timestamp = dto.timestamp != null ? dto.timestamp : LocalDateTime.now();
+        l.setUserId(dto.userId);
+        l.setLatitude(dto.latitude);
+        l.setLongitude(dto.longitude);
+        l.setTimestamp(dto.timestamp != null ? dto.timestamp : LocalDateTime.now());
         repository.persist(l);
     }
 
     public List<LocationDto> getAll() {
         return repository.listAll().stream().map(l -> {
             LocationDto dto = new LocationDto();
-            dto.userId = l.userId;
-            dto.latitude = l.latitude;
-            dto.longitude = l.longitude;
-            dto.timestamp = l.timestamp;
+            dto.userId = l.getUserId();
+            dto.latitude = l.getLatitude();
+            dto.longitude = l.getLongitude();
+            dto.timestamp = l.getTimestamp();
             return dto;
         }).collect(Collectors.toList());
     }

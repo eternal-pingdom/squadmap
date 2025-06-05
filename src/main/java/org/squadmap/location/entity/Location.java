@@ -9,17 +9,64 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     @Column(name = "user_id", nullable = false)
-    public String userId;
+    private String userId;
 
     @Column(nullable = false)
-    public Double latitude;
+    private Double latitude;
 
     @Column(nullable = false)
-    public Double longitude;
+    private Double longitude;
 
     @Column(nullable = false)
-    public LocalDateTime timestamp;
+    private LocalDateTime timestamp;
+
+    public Location() {
+        // Standardkonstruktor für JPA
+    }
+
+    public Location(String userId, Double latitude, Double longitude, LocalDateTime timestamp) {
+        this.userId = userId;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.timestamp = timestamp;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 }
