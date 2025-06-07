@@ -58,8 +58,6 @@ jobs:
           port: ${{ secrets.STAGING_PORT }}
           script: |
             set -e
-            ssh -tp 2222 obivan@5.75.164.229 << 'EOF'
             cd /home/obivan/squadmap-deploy
-            docker compose down || true
-            docker compose up -d --build || docker-compose logs > deploy-error.log
-            EOF
+            docker compose down -v || true
+            docker compose up -d --build
