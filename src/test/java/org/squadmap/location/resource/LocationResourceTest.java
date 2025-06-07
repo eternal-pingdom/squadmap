@@ -1,7 +1,7 @@
 package org.squadmap.location.resource;
 
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.junit.mockito.InjectMockBean; // Sicherstellen, dass dieser Import korrekt ist
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 @QuarkusTest
 public class LocationResourceTest {
 
-    @InjectMock
+    @InjectMockBean // Diese Annotation hinzufügen
     LocationService locationService;
 
     @Test
