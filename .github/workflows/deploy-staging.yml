@@ -21,43 +21,57 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Build Quarkus App
+      - name: Build Quarkus Uber-JAR
         run: ./mvnw clean package -Dquarkus.package.type=uber-jar
 
-      - name: Ensure target directory and permissions
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.STAGING_HOST }}
-          username: ${{ secrets.STAGING_USER }}
-          key: ${{ secrets.STAGING_SSH_KEY }}
-          port: ${{ secrets.STAGING_PORT }}
-          script: |
-            mkdir -p /home/obivan/squadmap-deploy
-            chown -R obivan:obivan /home/obivan/squadmap-deploy
-            chmod -R u+rwX /home/obivan/squadmap-deploy
+      - name: Prepare deploy folder
+        run: |
+          mkdir -p deploy
+          cp target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar deploy/
+          cp docker-compose.yml deploy/
+          cp Dockerfile deploy/
 
-      - name: Copy JAR to staging server
+      - name: Copy deploy folder to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
-          source: target/squadmap-backend-1.0.0-SNAPSHOT-runner.jar
-          target: /home/obivan/squadmap-deploy/
+          port: 2222
+          source: "deploy/*"
+          target: "/home/obivan/squadmap-deploy/"
           overwrite: true
-          port: ${{ secrets.STAGING_PORT }}
           timeout: 30s
           command_timeout: 10m
 
-      - name: Restart service via SSH with fail detection
+      - name: Generate .env on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
-          port: ${{ secrets.STAGING_PORT }}
+          port: 2222
           script: |
-            set -e
+            cat > /home/obivan/squadmap-deploy/.env <<EOF
+            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+            MYSQL_USER=${{ secrets.MYSQL_USER }}
+            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+
+            QUARKUS_DATASOURCE_USERNAME=${{ secrets.MYSQL_USER }}
+            QUARKUS_DATASOURCE_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            QUARKUS_DATASOURCE_JDBC_URL=jdbc:mariadb://mysql:3306/${{ secrets.MYSQL_DATABASE }}
+            QUARKUS_DATASOURCE_DB_KIND=mysql
+            EOF
+
+      - name: Restart docker-compose on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: 2222
+          script: |
             cd /home/obivan/squadmap-deploy
-            docker compose down -v || true
+            docker compose down || true
             docker compose up -d --build
